@@ -1,15 +1,45 @@
 <template>
   <div class="input-add">
-    <input type="text" />
-    <button>
+    <input
+      type="text"
+      name="todo"
+      v-model="todoContent"
+      @keyup.enter="emitAddTodo"
+    />
+    <button @click="emitAddTodo">
       <i class="plus"></i>
     </button>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
   name: "TodoAdd",
+  props: ["tid"],
+  setup(props, context) {
+    /**
+     * 输入内容
+     */
+    const todoContent = ref("");
+    /**
+     * 回车、点击按钮触发事件，监听自定义事件，向父组件传事项对象
+     */
+    const emitAddTodo = () => {
+      const todo = {
+        id: props.tid,
+        content: todoContent.value,
+        completed: false,
+      };
+      context.emit("add-todo", todo);
+      todoContent.value = "";
+    };
+
+    return {
+      todoContent,
+      emitAddTodo,
+    };
+  },
 };
 </script>
 
@@ -20,6 +50,7 @@ export default {
   display: flex;
   align-items: center;
 }
+
 .input-add input {
   width: 100%;
   padding: 16px 52px 16px 18px;
@@ -30,6 +61,7 @@ export default {
   font-size: 16px;
   color: #626262;
 }
+
 .input-add button {
   position: absolute;
   right: 0;
@@ -43,6 +75,7 @@ export default {
   color: white;
   cursor: pointer;
 }
+
 .input-add .plus {
   display: block;
   width: 100%;
