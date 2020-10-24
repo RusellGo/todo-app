@@ -18,29 +18,33 @@ export default {
   name: "TodoAdd",
   props: ["tid"],
   setup(props, context) {
-    /**
-     * 输入内容
-     */
-    const todoContent = ref("");
-    /**
-     * 回车、点击按钮触发事件，监听自定义事件，向父组件传事项对象
-     */
-    const emitAddTodo = () => {
-      const todo = {
-        id: props.tid,
-        content: todoContent.value,
-        completed: false,
-      };
-      context.emit("add-todo", todo);
-      todoContent.value = "";
-    };
-
-    return {
-      todoContent,
-      emitAddTodo,
-    };
+    return useEmitAddTodo(props.tid, context.emit);
   },
 };
+
+function useEmitAddTodo(tid, emit) {
+  /**
+   * 输入内容
+   */
+  const todoContent = ref("");
+  /**
+   * 回车、点击按钮触发事件，监听自定义事件，向父组件传事项对象
+   */
+  const emitAddTodo = () => {
+    const todo = {
+      id: tid,
+      content: todoContent.value,
+      completed: false,
+    };
+    emit("add-todo", todo);
+    todoContent.value = "";
+  };
+
+  return {
+    todoContent,
+    emitAddTodo,
+  };
+}
 </script>
 
 <style scoped>
